@@ -8,6 +8,10 @@
 import Foundation
 
 class DefaultNetworkService: NetworkService {
+    static let instance = DefaultNetworkService()
+    
+    private init() {}
+    
     func request<T>(url: URL, httpMethod: HttpMethod, httpBody: Data?, httpHeaders: [String : String]?) async throws -> T where T : Decodable {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = httpMethod.rawValue
