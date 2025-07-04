@@ -13,7 +13,7 @@ class MealsDbApiService: ApiService {
     var networkService: NetworkService
     
     init(
-        baseUrlString: String = "www.themealdb.com/api/json/v1/1/",
+        baseUrlString: String = "https://www.themealdb.com/api/json/v1/1",
         networkService: NetworkService = DefaultNetworkService.instance
     ) {
         self.baseUrlString = baseUrlString
