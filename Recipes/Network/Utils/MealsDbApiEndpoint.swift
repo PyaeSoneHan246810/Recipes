@@ -9,16 +9,21 @@ import Foundation
 
 enum MealsDbApiEndpoint: ApiEndpoint {
     case getCategories
+    case getRecipesByCategory(categoryName: String)
     var endpointPath: String {
         switch self {
         case .getCategories:
             "/categories.php"
+        case .getRecipesByCategory(let categoryName):
+            "/filter.php?c=\(categoryName)"
         }
     }
     
     var httpMethod: HttpMethod {
         switch self {
         case .getCategories:
+            .get
+        case .getRecipesByCategory(_):
             .get
         }
     }
@@ -27,12 +32,16 @@ enum MealsDbApiEndpoint: ApiEndpoint {
         switch self {
         case .getCategories:
             nil
+        case .getRecipesByCategory(_):
+            nil
         }
     }
     
     var httpHeaders: [String : String]? {
         switch self {
         case .getCategories:
+            nil
+        case .getRecipesByCategory(_):
             nil
         }
     }
