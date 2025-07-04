@@ -28,6 +28,7 @@ struct RecipeView: View {
                 .font(.headline)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 }
 

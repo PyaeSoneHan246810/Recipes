@@ -32,6 +32,9 @@ struct HomeView: View {
         .contentMargins(.vertical, 12.0)
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: Recipe.self) { recipe in
+            
+        }
         .task {
             if !viewModel.categoriesDataState.isSuccess {
                 await viewModel.getCategories()
@@ -98,7 +101,10 @@ struct HomeView: View {
         case .success(let recipes):
             LazyVStack(spacing: 12.0) {
                 ForEach(recipes) { recipe in
-                    RecipeView(recipe: recipe)
+                    NavigationLink(value: recipe) {
+                        RecipeView(recipe: recipe)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 16.0)
