@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GetCategoriesDto: Decodable {
+struct CategoriesDto: Decodable {
     let categories: [Category]
     enum CodingKeys: String, CodingKey {
         case categories = "categories"

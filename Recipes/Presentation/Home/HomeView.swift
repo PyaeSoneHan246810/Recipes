@@ -9,18 +9,23 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var viewModel: HomeViewModel
-    init(categoryRepository: CategoryRepository) {
+    init(categoryRepository: CategoryRepository, recipeRepository: RecipeRepository) {
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor : UIColor.accent,
         ]
-        _viewModel = State(initialValue: HomeViewModel(categoryRepository: categoryRepository))
+        _viewModel = State(
+            initialValue: HomeViewModel(categoryRepository: categoryRepository, recipeRepository: recipeRepository)
+        )
     }
     var body: some View {
         ScrollView(.vertical) {
-            VStack(spacing: 0.0) {
-                headerView
-                Spacer(minLength: 12.0)
-                categorySelectionView
+            VStack(spacing: 20.0) {
+                VStack(alignment: .leading, spacing: 12.0) {
+                    headerView
+                    categorySelectionView
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                recipesView
             }
         }
         .scrollIndicators(.hidden)
@@ -37,7 +42,6 @@ struct HomeView: View {
         Text("What do you want to cook today?")
             .font(.title2)
             .fontWeight(.semibold)
-            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16.0)
     }
     private var categorySelectionView: some View {
@@ -76,12 +80,39 @@ struct HomeView: View {
         .scrollIndicators(.hidden)
         .contentMargins(.horizontal, 16.0)
     }
+    @ViewBuilder
+    private var recipesView: some View {
+        if viewModel.selectedCategoryName == nil {
+            
+        } else {
+            recipesByCategoryView
+        }
+    }
+    @ViewBuilder
+    private var recipesByCategoryView: some View {
+        switch viewModel.recipesDataState {
+        case .idle:
+            EmptyView()
+        case .loading:
+            ProgressView()
+        case .success(let recipes):
+            LazyVStack(spacing: 12.0) {
+                ForEach(recipes) { recipe in
+                    RecipeView(recipe: recipe)
+                }
+            }
+            .padding(.horizontal, 16.0)
+        case .failure(let error):
+            ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle.fill", description: Text(error.error.localizedDescription))
+        }
+    }
 }
 
 #Preview {
     NavigationStack {
         HomeView(
-            categoryRepository: RemoteCategoryRepository(apiService: MealsDbApiService())
+            categoryRepository: RemoteCategoryRepository(apiService: MealsDbApiService()),
+            recipeRepository: RemoteRecipeCategory(apiService: MealsDbApiService())
         )
     }
 }
