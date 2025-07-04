@@ -12,7 +12,7 @@ class RemoteRecipeCategory: RecipeRepository {
     init(apiService: ApiService) {
         self.apiService = apiService
     }
-    func getRecipes(by categoryName: String) async -> Result<[Recipe], any Error> {
+    func getRecipes(by categoryName: String) async -> Result<[Recipe], Error> {
         let apiEndpoint = MealsDbApiEndpoint.getRecipesByCategory(categoryName: categoryName)
         do {
             let recipeDto: RecipesDto = try await apiService.request(apiEndpoint: apiEndpoint)
@@ -21,5 +21,17 @@ class RemoteRecipeCategory: RecipeRepository {
             return .failure(error)
         }
     }
-    
+    func getRecipeDetails(id: String) async -> Result<RecipeDetails, Error> {
+        let apiEndpoint = MealsDbApiEndpoint.getRecipeDetails(id: id)
+        do {
+            let recipeDetailsDto: RecipeDetailsDto = try await apiService.request(apiEndpoint: apiEndpoint)
+            if let recipeDetails = recipeDetailsDto.details.first {
+                return .success(recipeDetails)
+            } else {
+                return .failure(RecipeError.recipeNotFound)
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
 }

@@ -33,5 +33,5 @@ struct RecipeView: View {
 }
 
 #Preview {
-    RecipeView(recipe: Recipe(id: "1", name: "Baked salmon with fennel & tomatoes", image: "https://www.themealdb.com/images/media/meals/1548772327.jpg"))
+    RecipeView(recipe: Recipe.sample)
 }

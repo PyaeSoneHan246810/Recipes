@@ -17,3 +17,7 @@ struct Recipe: Decodable, Identifiable, Equatable, Hashable {
         case image = "strMealThumb"
     }
 }
+
+extension Recipe {
+    static let sample: Recipe = Recipe(id: "52959", name: "Baked salmon with fennel & tomatoes", image: "https://www.themealdb.com/images/media/meals/1548772327.jpg")
+}
