@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0496DF3A2E17E5C70040C1CB /* SwiftUINavigationTransitions in Frameworks */ = {isa = PBXBuildFile; productRef = 0496DF392E17E5C70040C1CB /* SwiftUINavigationTransitions */; };
+		0496DF8E2E17EC560040C1CB /* YouTubePlayerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0496DF8D2E17EC560040C1CB /* YouTubePlayerKit */; };
 		04A6971B2E17B337004744CC /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 04A6971A2E17B337004744CC /* Kingfisher */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +30,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A6971B2E17B337004744CC /* Kingfisher in Frameworks */,
+				0496DF3A2E17E5C70040C1CB /* SwiftUINavigationTransitions in Frameworks */,
+				0496DF8E2E17EC560040C1CB /* YouTubePlayerKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +75,8 @@
 			name = Recipes;
 			packageProductDependencies = (
 				04A6971A2E17B337004744CC /* Kingfisher */,
+				0496DF392E17E5C70040C1CB /* SwiftUINavigationTransitions */,
+				0496DF8D2E17EC560040C1CB /* YouTubePlayerKit */,
 			);
 			productName = Recipes;
 			productReference = 04A6946E2E16C062004744CC /* Recipes.app */;
@@ -102,6 +108,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				04A697192E17B337004744CC /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				0496DF382E17E5C70040C1CB /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */,
+				0496DF8C2E17EC560040C1CB /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 04A6946F2E16C062004744CC /* Products */;
@@ -341,6 +349,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0496DF382E17E5C70040C1CB /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davdroman/swiftui-navigation-transitions";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.1;
+			};
+		};
+		0496DF8C2E17EC560040C1CB /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SvenTiigi/YouTubePlayerKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		04A697192E17B337004744CC /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -352,6 +376,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0496DF392E17E5C70040C1CB /* SwiftUINavigationTransitions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0496DF382E17E5C70040C1CB /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */;
+			productName = SwiftUINavigationTransitions;
+		};
+		0496DF8D2E17EC560040C1CB /* YouTubePlayerKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0496DF8C2E17EC560040C1CB /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */;
+			productName = YouTubePlayerKit;
+		};
 		04A6971A2E17B337004744CC /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 04A697192E17B337004744CC /* XCRemoteSwiftPackageReference "Kingfisher" */;

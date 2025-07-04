@@ -9,4 +9,5 @@ import Foundation
 
 protocol RecipeRepository {
     func getRecipes(by categoryName: String) async -> Result<[Recipe], Error>
+    func getRecipeDetails(id: String) async -> Result<RecipeDetails, Error>
 }

@@ -6,13 +6,18 @@
 //
 
 import SwiftUI
+import SwiftUINavigationTransitions
 
 struct HomeView: View {
+    let categoryRepository: CategoryRepository
+    let recipeRepository: RecipeRepository
     @State private var viewModel: HomeViewModel
     init(categoryRepository: CategoryRepository, recipeRepository: RecipeRepository) {
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor : UIColor.accent,
         ]
+        self.categoryRepository = categoryRepository
+        self.recipeRepository = recipeRepository
         _viewModel = State(
             initialValue: HomeViewModel(categoryRepository: categoryRepository, recipeRepository: recipeRepository)
         )
@@ -33,8 +38,12 @@ struct HomeView: View {
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: Recipe.self) { recipe in
-            
+            RecipeDetailsView(recipe: recipe, recipeRepository: recipeRepository)
         }
+        .navigationTransition(
+            .slide(axis: .horizontal).combined(with: .fade(.in)),
+            interactivity: .pan
+        )
         .task {
             if !viewModel.categoriesDataState.isSuccess {
                 await viewModel.getCategories()
