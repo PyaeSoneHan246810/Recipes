@@ -9,12 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
     let remoteCategoryRepository = RemoteCategoryRepository(apiService: MealsDbApiService())
+    let remoteRecipeRepository = RemoteRecipeCategory(apiService: MealsDbApiService())
     var body: some View {
         TabView {
             Tab("Home", systemImage: "house") {
                 NavigationStack {
                     HomeView(
-                        categoryRepository: remoteCategoryRepository
+                        categoryRepository: remoteCategoryRepository,
+                        recipeRepository: remoteRecipeRepository
                     )
                 }
             }

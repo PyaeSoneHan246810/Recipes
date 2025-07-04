@@ -15,8 +15,8 @@ class RemoteCategoryRepository: CategoryRepository {
     func getCategories() async -> Result<[Category], Error> {
         let apiEndpoint = MealsDbApiEndpoint.getCategories
         do {
-            let getCategoriesDto: GetCategoriesDto = try await apiService.request(apiEndpoint: apiEndpoint)
-            return .success(getCategoriesDto.categories)
+            let categoriesDto: CategoriesDto = try await apiService.request(apiEndpoint: apiEndpoint)
+            return .success(categoriesDto.categories)
         } catch {
             return .failure(error)
         }
