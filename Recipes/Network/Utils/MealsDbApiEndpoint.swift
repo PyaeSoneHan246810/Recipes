@@ -11,6 +11,7 @@ enum MealsDbApiEndpoint: ApiEndpoint {
     case getCategories
     case getRecipesByCategory(categoryName: String)
     case getRecipeDetails(id: String)
+    case searchRecipes(searchText: String)
     var endpointPath: String {
         switch self {
         case .getCategories:
@@ -19,6 +20,8 @@ enum MealsDbApiEndpoint: ApiEndpoint {
             "/filter.php?c=\(categoryName)"
         case .getRecipeDetails(let id):
             "/lookup.php?i=\(id)"
+        case .searchRecipes(let searchText):
+            "/search.php?s=\(searchText)"
         }
     }
     
@@ -29,6 +32,8 @@ enum MealsDbApiEndpoint: ApiEndpoint {
         case .getRecipesByCategory(_):
             .get
         case .getRecipeDetails(_):
+            .get
+        case .searchRecipes(_):
             .get
         }
     }
@@ -41,6 +46,8 @@ enum MealsDbApiEndpoint: ApiEndpoint {
             nil
         case .getRecipeDetails(_):
             nil
+        case .searchRecipes(_):
+            nil
         }
     }
     
@@ -51,6 +58,8 @@ enum MealsDbApiEndpoint: ApiEndpoint {
         case .getRecipesByCategory(_):
             nil
         case .getRecipeDetails(_):
+            nil
+        case .searchRecipes(_):
             nil
         }
     }

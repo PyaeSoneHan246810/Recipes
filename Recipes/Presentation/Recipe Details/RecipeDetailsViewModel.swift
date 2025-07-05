@@ -46,7 +46,7 @@ class RecipeDetailsViewModel {
         case .success(let recipeDetails):
             recipeDetailsDataState = .success(data: recipeDetails)
         case .failure(let error):
-            recipeDetailsDataState = .failure(error: EquatableError(error: error))
+            recipeDetailsDataState = .failure(error: error)
         }
     }
 }

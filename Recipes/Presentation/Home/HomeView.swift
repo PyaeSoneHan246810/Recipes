@@ -87,7 +87,6 @@ struct HomeView: View {
                     EmptyView()
                 }
             }
-            .animation(.spring, value: viewModel.categoriesDataState)
         }
         .scrollIndicators(.hidden)
         .contentMargins(.horizontal, 16.0)
@@ -118,7 +117,7 @@ struct HomeView: View {
             }
             .padding(.horizontal, 16.0)
         case .failure(let error):
-            ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle.fill", description: Text(error.error.localizedDescription))
+            ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle.fill", description: Text(error.localizedDescription))
         }
     }
 }
@@ -127,7 +126,7 @@ struct HomeView: View {
     NavigationStack {
         HomeView(
             categoryRepository: RemoteCategoryRepository(apiService: MealsDbApiService()),
-            recipeRepository: RemoteRecipeCategory(apiService: MealsDbApiService())
+            recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService())
         )
     }
 }

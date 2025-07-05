@@ -8,7 +8,7 @@
 import Foundation
 
 struct RecipeDetailsDto: Decodable {
-    let details: [RecipeDetails]
+    let details: [RecipeDetails]?
     enum CodingKeys: String, CodingKey {
         case details = "meals"
     }

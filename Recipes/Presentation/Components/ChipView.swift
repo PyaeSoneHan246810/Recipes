@@ -12,7 +12,7 @@ struct ChipView: View {
     let isSelected: Bool
     let onTap: (String) -> Void
     var backgroundColor: Color {
-        isSelected ? .accentColor : .clear
+        isSelected ? .accent : .clear
     }
     var foregroundColor: Color {
         isSelected ? .white : .primary
@@ -21,7 +21,7 @@ struct ChipView: View {
         Text(title)
             .padding(.horizontal, 16.0)
             .padding(.vertical, 8.0)
-            .background(backgroundColor, in: Capsule())
+            .background(backgroundColor.gradient, in: Capsule())
             .foregroundStyle(foregroundColor)
             .overlay {
                 Capsule()

@@ -107,4 +107,8 @@ struct RecipeDetails: Decodable, Equatable {
         case measure19 = "strMeasure19"
         case measure20 = "strMeasure20"
     }
+    
+    func toRecipe() -> Recipe {
+        Recipe(id: self.id, name: self.name ?? "", image: self.image ?? "")
+    }
 }
