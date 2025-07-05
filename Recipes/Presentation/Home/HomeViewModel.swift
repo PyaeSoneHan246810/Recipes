@@ -36,7 +36,7 @@ class HomeViewModel {
         case .success(let categories):
             categoriesDataState = .success(data: categories)
         case .failure(let error):
-            categoriesDataState = .failure(error: EquatableError(error: error))
+            categoriesDataState = .failure(error: error)
         }
     }
     
@@ -47,7 +47,7 @@ class HomeViewModel {
         case .success(let recipes):
             recipesDataState = .success(data: recipes)
         case .failure(let error):
-            recipesDataState = .failure(error: EquatableError(error: error))
+            recipesDataState = .failure(error: error)
         }
     }
     

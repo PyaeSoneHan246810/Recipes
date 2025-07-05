@@ -66,7 +66,9 @@ struct RecipeDetailsView: View {
             }
         }
         .task {
-            await viewModel.getRecipeDetails()
+            if !viewModel.recipeDetailsDataState.isSuccess {
+                await viewModel.getRecipeDetails()
+            }
         }
     }
     private var recipeImageView: some View {
@@ -136,8 +138,8 @@ struct RecipeDetailsView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16.0)
-        case .failure(let equatableError):
-            ErrorView(error: equatableError.error)
+        case .failure(let error):
+            ErrorView(error: error)
         }
     }
     private func recipeTagsView(_ tags: String) -> some View {
@@ -205,7 +207,7 @@ struct RecipeDetailsView: View {
     NavigationStack {
         RecipeDetailsView(
             recipe: Recipe.sample,
-            recipeRepository: RemoteRecipeCategory(apiService: MealsDbApiService())
+            recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService())
         )
     }
 }

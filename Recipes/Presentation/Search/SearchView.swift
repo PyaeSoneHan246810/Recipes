@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+import SwiftUINavigationTransitions
 
 struct SearchView: View {
+    let recipeRepository: RecipeRepository
     @State private var viewModel: SearchViewModel
-    init() {
+    init(recipeRepository: RecipeRepository) {
+        self.recipeRepository = recipeRepository
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor : UIColor.accent,
         ]
-        _viewModel = State(initialValue: SearchViewModel())
+        _viewModel = State(initialValue: SearchViewModel(recipeRepository: recipeRepository))
     }
     var body: some View {
         VStack(spacing: 4.0) {
@@ -23,25 +26,51 @@ struct SearchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: Recipe.self) { recipe in
+            RecipeDetailsView(recipe: recipe, recipeRepository: recipeRepository)
+        }
+        .navigationTransition(
+            .slide(axis: .horizontal).combined(with: .fade(.in)),
+            interactivity: .pan
+        )
+        .onChange(of: viewModel.searchText) {
+            if case .success(let searchResults) = viewModel.searchResultsDataState, searchResults.isEmpty {
+                viewModel.resetSearchResultsDataState()
+            }
+        }
     }
     private var searchBarView: some View {
         HStack(spacing: 16.0) {
             TextField("Search recipes", text: $viewModel.searchText)
+                .textInputAutocapitalization(.never)
                 .font(.title3)
                 .padding()
                 .background(Color.accent.opacity(0.1), in: RoundedRectangle(cornerRadius: 12.0))
+                .overlay(alignment: .trailing) {
+                    if !viewModel.isSearchButtonDisabled {
+                        Button {
+                            viewModel.searchText = ""
+                            viewModel.resetSearchResultsDataState()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                        }
+                        .padding(.horizontal)
+                        .transition(.scale)
+                    }
+                }
             Button {
-                
+                Task { await viewModel.searchForResults() }
             } label: {
                 Image(systemName: "arrow.forward")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 36.0, height: 36.0)
             }
-
+            .disabled(viewModel.isSearchButtonDisabled)
         }
         .padding(.horizontal, 16.0)
         .padding(.top, 16.0)
+        .animation(.spring, value: viewModel.isSearchButtonDisabled)
     }
     @ViewBuilder
     private var searchResultsView: some View {
@@ -53,8 +82,8 @@ struct SearchView: View {
         case .success(let searchResults):
             let recipes = searchResults.map { $0.toRecipe() }
             searchRecipesView(recipes: recipes)
-        case .failure(let equatableError):
-            ErrorView(error: equatableError.error)
+        case .failure(let error):
+            ErrorView(error: error)
         }
     }
     private var searchIdleView: some View {
@@ -102,6 +131,6 @@ struct SearchView: View {
 
 #Preview {
     NavigationStack {
-        SearchView()
+        SearchView(recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService()))
     }
 }
