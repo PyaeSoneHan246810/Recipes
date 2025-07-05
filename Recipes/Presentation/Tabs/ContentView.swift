@@ -21,7 +21,9 @@ struct ContentView: View {
                 }
             }
             Tab("Search", systemImage: "magnifyingglass") {
-                
+                NavigationStack {
+                    SearchView()
+                }
             }
             Tab("Saved", systemImage: "bookmark") {
                 

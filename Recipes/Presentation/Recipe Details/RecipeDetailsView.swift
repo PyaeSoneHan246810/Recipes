@@ -102,13 +102,13 @@ struct RecipeDetailsView: View {
                 HStack {
                     HStack {
                         Image(systemName: "fork.knife")
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(.accent.gradient)
                         Text(recipeDetails.category ?? "unavailable.")
                     }
                     Spacer()
                     HStack {
                         Image(systemName: "pin.fill")
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(.accent.gradient)
                         Text(recipeDetails.area ?? "unavailable.")
                     }
                 }
