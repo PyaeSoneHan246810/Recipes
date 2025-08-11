@@ -71,29 +71,36 @@ struct RecipeDetailsView: View {
             }
         }
     }
+    @ViewBuilder
     private var recipeImageView: some View {
-        KFImage(URL(string: recipe.image))
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(maxHeight: 360.0)
-            .clipped()
-            .overlay {
-                Button {
-                    isVideoPlayerSheetPresented.toggle()
-                } label: {
-                    Image(systemName: "play.rectangle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .padding()
-                        .frame(width: 80.0, height: 80.0)
-                        .foregroundStyle(.pink.gradient)
-                        .background {
-                            Circle()
-                                .fill(.thinMaterial)
-                        }
-                }
-                .buttonStyle(.plain)
+        ZStack {
+            if let image = recipe.image {
+                KFImage(URL(string: image))
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(maxHeight: 360.0)
+                    .clipped()
+            } else {
+                Rectangle()
+                    .fill(Color(uiColor: .systemGray6))
+                    .frame(height: 360.0)
             }
+            Button {
+                isVideoPlayerSheetPresented.toggle()
+            } label: {
+                Image(systemName: "play.rectangle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding()
+                    .frame(width: 80.0, height: 80.0)
+                    .foregroundStyle(.pink.gradient)
+                    .background {
+                        Circle()
+                            .fill(.thinMaterial)
+                    }
+            }
+            .buttonStyle(.plain)
+        }
     }
     private var recipeInfoView: some View {
         VStack(alignment: .leading, spacing: 12.0) {
