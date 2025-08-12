@@ -94,14 +94,14 @@ struct HomeView: View {
     @ViewBuilder
     private var recipesView: some View {
         if viewModel.selectedCategoryName == nil {
-            
+            allRecipesView
         } else {
             recipesByCategoryView
         }
     }
     @ViewBuilder
-    private var recipesByCategoryView: some View {
-        switch viewModel.recipesDataState {
+    private var allRecipesView: some View {
+        switch viewModel.allRecipesDataState {
         case .idle:
             EmptyView()
         case .loading:
@@ -117,7 +117,28 @@ struct HomeView: View {
             }
             .padding(.horizontal, 16.0)
         case .failure(let error):
-            ContentUnavailableView("Something went wrong", systemImage: "exclamationmark.triangle.fill", description: Text(error.localizedDescription))
+            ContentUnavailableView(error.localizedDescription, systemImage: "exclamationmark.triangle.fill", description: Text(error.localizedDescription))
+        }
+    }
+    @ViewBuilder
+    private var recipesByCategoryView: some View {
+        switch viewModel.recipesByCategoryDataState {
+        case .idle:
+            EmptyView()
+        case .loading:
+            ProgressView()
+        case .success(let recipes):
+            LazyVStack(spacing: 12.0) {
+                ForEach(recipes) { recipe in
+                    NavigationLink(value: recipe) {
+                        RecipeView(recipe: recipe)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16.0)
+        case .failure(let error):
+            ContentUnavailableView(error.localizedDescription, systemImage: "exclamationmark.triangle.fill", description: Text(error.localizedDescription))
         }
     }
 }

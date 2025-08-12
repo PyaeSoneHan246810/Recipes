@@ -9,7 +9,7 @@ import Foundation
 
 struct Recipe: Decodable, Identifiable, Equatable, Hashable {
     let id: String
-    let name: String
+    var name: String
     let image: String?
     enum CodingKeys: String, CodingKey {
         case id = "idMeal"
