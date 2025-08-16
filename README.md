@@ -8,6 +8,7 @@ This iOS app, built with SwiftUI, retrieves recipes from TheMealDB’s free Reci
 
 - Swift Programming Language
 - SwiftUI Framework
+- SwiftData Framework
 - Kingfisher Package (https://github.com/onevcat/Kingfisher)
 - SwiftUI Navigation Transitions Package (https://github.com/davdroman/swiftui-navigation-transitions)
 - YouTubePlayerKit Package (https://github.com/SvenTiigi/YouTubePlayerKit)
@@ -35,6 +36,12 @@ This iOS app, built with SwiftUI, retrieves recipes from TheMealDB’s free Reci
 
 <img width="200" src="https://github.com/user-attachments/assets/806157f5-53bc-46fa-80ef-7ace9ce1912e" />
 
+<img width="200" src="https://github.com/user-attachments/assets/b8af866f-fe6d-4f63-9fdd-21958e8a089b" />
+
+<img width="200" src="https://github.com/user-attachments/assets/ac121b6e-db2f-42b8-9775-e822e3cbd732" />
+
+<img width="200" src="https://github.com/user-attachments/assets/a6387b2d-14c9-412c-be40-32c9a1699502" />
+
 ### Dark Theme
 
 <img width="200" src="https://github.com/user-attachments/assets/9bc735c8-9595-45c3-8798-077f4c2573ab" />
@@ -54,3 +61,9 @@ This iOS app, built with SwiftUI, retrieves recipes from TheMealDB’s free Reci
 <img width="200" src="https://github.com/user-attachments/assets/fe3d162b-b875-4e26-a73d-b9109631f914" />
 
 <img width="200" src="https://github.com/user-attachments/assets/06c7fe21-295e-4f8b-a195-eac0680e3791" />
+
+<img width="200" src="https://github.com/user-attachments/assets/32e2a1e3-6593-4a47-92fb-b58d3dd7c681" />
+
+<img width="200" src="https://github.com/user-attachments/assets/b4457044-7318-41f2-ba3c-792aad4fd573" />
+
+<img width="200" src="https://github.com/user-attachments/assets/142cf90f-7516-4a44-9a09-4c5ee506b65d" />
