@@ -7,17 +7,21 @@
 
 import Foundation
 import Observation
+import SwiftData
 
 @Observable
 class RecipeDetailsViewModel {
     private(set) var recipeDetailsDataState: DataState<RecipeDetails> = .idle
+    private(set) var savedRecipes: [SavedRecipe] = []
     
     private let recipeId: String
     private let getRecipeDetailsUsecase: GetRecipeDetailsUsecase
+    private let modelContext: ModelContext
     
-    init(recipeId: String, recipeRepository: RecipeRepository) {
+    init(recipeId: String, recipeRepository: RecipeRepository, modelContext: ModelContext) {
         self.recipeId = recipeId
         getRecipeDetailsUsecase = GetRecipeDetailsUsecase(repository: recipeRepository)
+        self.modelContext = modelContext
     }
     
     var ingredients: [Ingredient] {
@@ -48,5 +52,33 @@ class RecipeDetailsViewModel {
         case .failure(let error):
             recipeDetailsDataState = .failure(error: error)
         }
+    }
+    
+    func getSavedRecipes() {
+        let fetchDescriptor: FetchDescriptor<SavedRecipe> = .init(sortBy: [SortDescriptor(\.name)])
+        do {
+            savedRecipes = try modelContext.fetch(fetchDescriptor)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    var isRecipeSaved: Bool {
+        savedRecipes.contains { $0.id == recipeId }
+    }
+    
+    func saveRecipe() {
+        if case .success(let recipeDetails) = recipeDetailsDataState {
+            let savedRecipe = SavedRecipe(from: recipeDetails)
+            modelContext.insert(savedRecipe)
+            getSavedRecipes()
+        }
+    }
+    
+    func removeSavedRecipe() {
+        let savedRecipe = savedRecipes.first { $0.id == recipeId }
+        guard let savedRecipe else { return }
+        modelContext.delete(savedRecipe)
+        getSavedRecipes()
     }
 }

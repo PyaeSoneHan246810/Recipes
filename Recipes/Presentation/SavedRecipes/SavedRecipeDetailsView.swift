@@ -1,24 +1,18 @@
 //
-//  RecipeDetailsView.swift
+//  SavedRecipeDetailsView.swift
 //  Recipes
 //
-//  Created by Dylan on 4/7/25.
+//  Created by Dylan on 16/8/25.
 //
 
 import SwiftUI
 import Kingfisher
 import YouTubePlayerKit
-import SwiftData
 
-struct RecipeDetailsView: View {
+struct SavedRecipeDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    let recipe: Recipe
-    @State private var viewModel: RecipeDetailsViewModel
+    let savedRecipe: SavedRecipe
     @State private var isVideoPlayerSheetPresented: Bool = false
-    init(recipe: Recipe, recipeRepository: RecipeRepository, modelContext: ModelContext) {
-        self.recipe = recipe
-        _viewModel = State(initialValue: RecipeDetailsViewModel(recipeId: recipe.id, recipeRepository: recipeRepository, modelContext: modelContext))
-    }
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 20.0) {
@@ -45,43 +39,18 @@ struct RecipeDetailsView: View {
                         }
                 }
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    if viewModel.isRecipeSaved {
-                        viewModel.removeSavedRecipe()
-                    } else {
-                        viewModel.saveRecipe()
-                    }
-                } label: {
-                    Image(systemName: viewModel.isRecipeSaved ? "bookmark.fill" : "bookmark")
-                        .frame(width: 40.0, height: 40.0)
-                        .background {
-                            Circle()
-                                .fill(.regularMaterial)
-    
-                        }
-                }
-            }
         }
         .sheet(isPresented: $isVideoPlayerSheetPresented) {
-            if case .success(let recipeDetails) = viewModel.recipeDetailsDataState, let youtubeVideoLink = recipeDetails.youtube, let url = URL(string: youtubeVideoLink) {
+            if let youtubeVideoLink = savedRecipe.youtube, let url = URL(string: youtubeVideoLink) {
                 YouTubePlayerView(YouTubePlayer(url: url))
                     .ignoresSafeArea()
                     .presentationDetents([.medium])
             }
         }
-        .task {
-            if !viewModel.recipeDetailsDataState.isSuccess {
-                await viewModel.getRecipeDetails()
-            }
-        }
-        .onAppear {
-            viewModel.getSavedRecipes()
-        }
     }
     private var recipeImageView: some View {
         ZStack {
-            if let image = recipe.image {
+            if let image = savedRecipe.image {
                 KFImage(URL(string: image))
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -111,22 +80,20 @@ struct RecipeDetailsView: View {
     }
     private var recipeInfoView: some View {
         VStack(alignment: .leading, spacing: 12.0) {
-            Text(recipe.name)
+            Text(savedRecipe.name ?? "Unknown")
                 .font(.title)
                 .fontWeight(.semibold)
-            if case .success(let recipeDetails) = viewModel.recipeDetailsDataState {
+            HStack {
                 HStack {
-                    HStack {
-                        Image(systemName: "fork.knife")
-                            .foregroundStyle(.accent.gradient)
-                        Text(recipeDetails.category ?? "unavailable.")
-                    }
-                    Spacer()
-                    HStack {
-                        Image(systemName: "pin.fill")
-                            .foregroundStyle(.accent.gradient)
-                        Text(recipeDetails.area ?? "unavailable.")
-                    }
+                    Image(systemName: "fork.knife")
+                        .foregroundStyle(.accent.gradient)
+                    Text(savedRecipe.category ?? "unavailable.")
+                }
+                Spacer()
+                HStack {
+                    Image(systemName: "pin.fill")
+                        .foregroundStyle(.accent.gradient)
+                    Text(savedRecipe.area ?? "unavailable.")
                 }
             }
         }
@@ -135,26 +102,17 @@ struct RecipeDetailsView: View {
     }
     @ViewBuilder
     private var recipeDetailsView: some View {
-        switch viewModel.recipeDetailsDataState {
-        case .idle:
-            EmptyView()
-        case .loading:
-            ProgressView()
-        case .success(let recipeDetails):
-            Group {
-                recipeTagsView(
-                    recipeDetails.tags ?? "unavailable."
-                )
-                recipeInstructionsView(
-                    recipeDetails.instructions ?? "unavailable."
-                )
-                recipeIngredientsView
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16.0)
-        case .failure(let error):
-            ErrorView(error: error)
+        Group {
+            recipeTagsView(
+                savedRecipe.tags ?? "unavailable."
+            )
+            recipeInstructionsView(
+                savedRecipe.instructions ?? "unavailable."
+            )
+            recipeIngredientsView
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16.0)
     }
     private func recipeTagsView(_ tags: String) -> some View {
         VStack(alignment: .leading, spacing: 12.0) {
@@ -200,7 +158,7 @@ struct RecipeDetailsView: View {
             }
             GroupBox {
                 VStack(spacing: 8.0) {
-                    ForEach(viewModel.ingredients) { ingredient in
+                    ForEach(ingredients) { ingredient in
                         ingredientItemView(ingredient)
                     }
                 }
@@ -215,17 +173,18 @@ struct RecipeDetailsView: View {
                 .fontWeight(.medium)
         }
     }
-}
-
-#Preview {
-    do {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let modelContainer = try ModelContainer(for: SavedRecipe.self, configurations: config)
-        return NavigationStack {
-            RecipeDetailsView(recipe: Recipe.sample, recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService()), modelContext: modelContainer.mainContext)
+    private var ingredients: [Ingredient] {
+        var ingredients: [Ingredient] = []
+        let mirror = Mirror(reflecting: savedRecipe.toRecipeDetails())
+        for (label, value) in mirror.children {
+            if let label, label.starts(with: "ingredient"), let ingredientName = value as? String, !ingredientName.isEmpty {
+                let ingredientNo = label.dropFirst("ingredient".count)
+                if let measure = mirror.descendant("measure\(ingredientNo)") as? String {
+                    let ingredient = Ingredient(name: ingredientName, measure: measure)
+                    ingredients.append(ingredient)
+                }
+            }
         }
-        
-    } catch {
-        fatalError("Failed to create ModelContainer for Saved Recipe.")
+        return ingredients
     }
 }

@@ -7,12 +7,14 @@
 
 import SwiftUI
 import SwiftUINavigationTransitions
+import SwiftData
 
 struct HomeView: View {
     let categoryRepository: CategoryRepository
     let recipeRepository: RecipeRepository
     @State private var viewModel: HomeViewModel
-    init(categoryRepository: CategoryRepository, recipeRepository: RecipeRepository) {
+    let modelContext: ModelContext
+    init(categoryRepository: CategoryRepository, recipeRepository: RecipeRepository, modelContext: ModelContext) {
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor : UIColor.accent,
         ]
@@ -21,6 +23,7 @@ struct HomeView: View {
         _viewModel = State(
             initialValue: HomeViewModel(categoryRepository: categoryRepository, recipeRepository: recipeRepository)
         )
+        self.modelContext = modelContext
     }
     var body: some View {
         ScrollView(.vertical) {
@@ -38,7 +41,7 @@ struct HomeView: View {
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: Recipe.self) { recipe in
-            RecipeDetailsView(recipe: recipe, recipeRepository: recipeRepository)
+            RecipeDetailsView(recipe: recipe, recipeRepository: recipeRepository, modelContext: modelContext)
         }
         .navigationTransition(
             .slide(axis: .horizontal).combined(with: .fade(.in)),
@@ -144,10 +147,17 @@ struct HomeView: View {
 }
 
 #Preview {
-    NavigationStack {
-        HomeView(
-            categoryRepository: RemoteCategoryRepository(apiService: MealsDbApiService()),
-            recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService())
-        )
+    do {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let modelContainer = try ModelContainer(for: SavedRecipe.self, configurations: config)
+        return NavigationStack {
+            HomeView(
+                categoryRepository: RemoteCategoryRepository(apiService: MealsDbApiService()),
+                recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService()),
+                modelContext: modelContainer.mainContext
+            )
+        }
+    } catch {
+        fatalError("Failed to create ModelContainer for Saved Recipe.")
     }
 }

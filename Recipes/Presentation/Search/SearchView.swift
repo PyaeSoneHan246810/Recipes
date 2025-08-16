@@ -7,16 +7,19 @@
 
 import SwiftUI
 import SwiftUINavigationTransitions
+import SwiftData
 
 struct SearchView: View {
     let recipeRepository: RecipeRepository
     @State private var viewModel: SearchViewModel
-    init(recipeRepository: RecipeRepository) {
+    let modelContext: ModelContext
+    init(recipeRepository: RecipeRepository, modelContext: ModelContext) {
         self.recipeRepository = recipeRepository
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor : UIColor.accent,
         ]
         _viewModel = State(initialValue: SearchViewModel(recipeRepository: recipeRepository))
+        self.modelContext = modelContext
     }
     var body: some View {
         VStack(spacing: 4.0) {
@@ -27,7 +30,7 @@ struct SearchView: View {
         .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: Recipe.self) { recipe in
-            RecipeDetailsView(recipe: recipe, recipeRepository: recipeRepository)
+            RecipeDetailsView(recipe: recipe, recipeRepository: recipeRepository, modelContext: modelContext)
         }
         .navigationTransition(
             .slide(axis: .horizontal).combined(with: .fade(.in)),
@@ -130,7 +133,11 @@ struct SearchView: View {
 }
 
 #Preview {
-    NavigationStack {
-        SearchView(recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService()))
+    do {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let modelContainer = try ModelContainer(for: SavedRecipe.self, configurations: config)
+        return SearchView(recipeRepository: RemoteRecipeRepository(apiService: MealsDbApiService()), modelContext: modelContainer.mainContext)
+    } catch {
+        fatalError("Failed to create ModelContainer for Saved Recipe.")
     }
 }
